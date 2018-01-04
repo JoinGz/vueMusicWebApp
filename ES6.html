@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+	</body>
+	<script type="text/javascript">
+		//		ES6操作
+		//箭头函数
+		//只有一个参数（参数可以不加括号） ,一行代码（可以不加{}）
+		var fun = num => console.log(num);
+		fun(1); // 1
+		//多个参数可以加括号 ,代码加{}  // 函数名 = (参数1，参数2)=>{代码块...}
+		var fun2 = (num1, num2) => {
+			let num = num1 + num2;
+			return console.log(num)
+		}
+		fun2(2, 3) // 5
+		console.log("------------------------------")
+		let [a, b, c] = [100, , 300];
+		console.log(a);
+		console.log(b);
+		console.log(c); // 100 undefined 300
+		console.log("------------------------------")
+		let [Q = 'q', W = 'w', E] = [, , 3];
+		console.log(Q);
+		console.log(W);
+		console.log(E); // q w 3 
+		console.log("------------------------------")
+		let obj = {
+			aobj: "aaa",
+			bobj: "bbb",
+			cobj: [1, 2, 3]
+		}
+		let arr = [, "aa", 999];
+		//	console.log(arr[0]);
+		({
+			aobj,
+			bobj,
+			cobj: arr[0]
+		} = obj);
+		console.log(aobj);
+		console.log(bobj);
+		console.log(arr);
+		let objectMe = {
+			p: [
+				"msg10086",
+				{
+					x: 1
+				}
+			]
+		};
+		let {
+			p,
+			p: [msg, {
+				x
+			}]
+		} = objectMe;
+		console.log("------------------------------");
+		console.log(p);
+		console.log(x);
+		console.log(msg);
+		let objTwo = [{
+			Sy: "I'M Y-man!heihei",
+			Syy: [1, 2, 3, 4, 5, 6],
+			objX: {
+				heihei: "heihei"
+			}
+		}, {
+			Sx: " I'M X-MAN "
+		}];
+		let [{
+			Sy,
+			Syy,
+			objX
+		}, {
+			Sx
+		}] = objTwo; // 数组貌似直接一一对应就OK了 
+		console.log("------------------------------");
+		console.log(Sy);
+		console.log(Syy);
+		console.log(Sx);
+		console.log(objX);
+
+		let objobj = {
+			ob: [{
+				obx: "box"
+			}, {
+				oby:"container"
+			}],
+			oy:"i'm oy"
+		}
+		
+		let {ob:myob,ob:[{obx},{oby}],oy} = objobj;
+		console.log("------------------------------");
+		console.log(myob);
+		console.log(obx);
+		console.log(oby);
+		console.log(oy);
+		let objin = {
+			in1:{
+				iny:"iny",
+				out :{
+					im:"imout",
+					haha:"123"
+				}
+			}
+		};
+		let {in1,in1:{out},in1:{iny,out:{im,haha}}} = objin;
+		console.log("------------------------------");
+		console.log(in1);
+		console.log(iny);
+		console.log(im);
+		console.log(haha);
+		console.log(out);
+	</script>
+
+</html>

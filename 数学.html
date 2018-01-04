@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Document</title>
+</head>
+<body>
+	
+</body>
+<script>
+//	var n = 10000*1.3;
+	function go(num){
+		if(num==0){
+			return 1;
+		}
+		return go(num-1)*num;
+	}
+	console.log(go(5));
+
+</script>
+</html>

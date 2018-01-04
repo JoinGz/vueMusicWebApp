@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="../Vue/vue.js"></script>
+		<script src="../Vue/vue-router.min.js"></script>
+		<!--<script src="../Vue/node_modules/vue-resource/dist/vue-resource.min.js"></script>-->
+	</head>
+	<body>
+		<div id="gz">
+			{{ms}}
+			<!--<router-link to="/home">22</router-link>-->
+			<router-link to="/home">home</router-link>
+			
+		</div>
+		<div>
+			<router-view></router-view>
+		</div>
+	</body>
+	<script>
+		window.onload=function(){
+			new Vue({
+				el:"#gz",
+				router: routers,
+				data:{
+					ms:123
+				}
+			})
+			
+			var Gz = {
+				template:"<h3>I'm Gz</h3>"
+			}
+//			var router = [{
+//				path:"/home",
+//				component:Gz
+//			}];
+//			var routers = new VueRouter({
+//				routes : router
+//			})
+			
+			var router = [{ 
+						path: "/home",
+						component: Gz
+					}];
+			var routers = new VueRouter({ 
+						routes: router
+			});
+			
+		}
+	</script>
+</html>
