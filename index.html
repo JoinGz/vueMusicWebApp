@@ -42,6 +42,29 @@
 			.pp-leave {
 				/*离开动画之前的状态*/
 			}
+			
+			button {
+				position: relative;
+			}
+			
+			.controlVoice {
+				width: 5px;
+				height: 110px;
+				background: #ccc;
+				position: absolute;
+				bottom: 100%;
+				left: 1.4rem;
+			}
+			
+			.yuan {
+				width: 10px;
+				height: 10px;
+				background: greenyellow;
+				position: relative;
+				top: 0;
+				left: -2.5px;
+				border-radius: 50%;
+			}
 		</style>
 	</head>
 
@@ -169,19 +192,26 @@
 						<p class="next">为何只是失望填密我的空虚</p>
 					</div>
 					<div class="progressbar">
-						<progress value="10" max="100"></progress>
-						<input type="range" value="10">
+						<progress value="0" max="100"></progress>
+						<!--<input type="range" value="10">-->
 					</div>
 					<div class="controls">
-						<button><i class="fa fa-retweet"></i></button>
+						<button class="active" ><i class="fa fa-volume-up" @click.self="changeShow1"></i>
+							<div class="controlVoice" v-show="showx">  <!--if是重新生成，数据会被初始化。show是展示隐藏。-->
+								<div class="yuan" @touchstart.stop.prevent = "touchStart" @touchmove.stop.prevent = "touchMove" @touchend.stop.prevent = "touchEnd" ></div>
+							</div>
+							
+						</button>
+						
 						<button class="active"><i class="fa fa-backward"></i></button>
 						<button class="active" @click="play"><i class="fa fa-play" id = "playi"></i></button>
 						<button class="active"><i class="fa fa-forward"></i></button>
 						<button class="active"><i class="fa fa-random"></i></button>
 					</div>
-					<audio src="杨坤 - 晚安.mp3" controls="controls" style="display: none;">
+					<audio src="杨坤 - 晚安.mp3" controls="controls">
 						Your browser does not support the audio tag.
 					</audio>
+					
 				</div>
 			</section>
 
@@ -224,35 +254,112 @@
 				data: function() {
 					return {
 						playstate: true,
-						songs: true
+						songs: true,
+						songtime: 0,
+						gotime: 0,
+						timer: 0,
+						startY :0, //开始位置
+						moveLength:0,//移动距离
+						endY:0, // 结束位置
+						moveY:0, //滑动时的位置
+						showx:false
+					}
+				},
+				computed: {
+					playButton: function() {
+						return document.querySelector("audio"); //audio标签
+					},
+					playi: function() {
+						return document.querySelector("#playi"); // i图标
+					},
+					progress: function() {
+						return document.querySelector("progress"); // 进度条
 					}
 				},
 				methods: {
 					play: function() {
-						var playButton = document.querySelector("audio");
-						var playi =document.querySelector("#playi");
-//						console.log(playi)
+						//						var playButton = document.querySelector("audio");
+						//						var playi =document.querySelector("#playi");
+						//						console.log(playi)
+						this.songtime = this.playButton.duration;
+						var _that = this; //  在这个function里面再定义function，这个function的this指向window
+						//						console.log(this.songtime)
+
 						if(this.songs) {
-							playButton.src = "杨坤 - 晚安.mp3";
+							//							this.playButton.src = "杨坤 - 晚安.mp3";
 							this.songs = !this.songs;
-						}
 
-						//						if(this.playstate) {
-						//							playButton.play();
-						//							this.playstate = !this.playstate;
-						//						} else {
-						//							playButton.pause();
-						//							this.playstate = !this.playstate;
-						//						}
-						if(playButton.paused) {
-							playButton.play();
-							playi.className="fa fa-pause";
+						}
+						if(this.playButton.paused) {
+							this.playButton.play();
+							this.playi.className = "fa fa-pause";
+							this.timer = setInterval(function() { // 再次定义function(setinterval)里面的this指向window
+								//console.log(this) //window
+								_that.gotime = _that.playButton.currentTime;
+								_that.progress.value = Math.round(_that.gotime / _that.songtime * 100);
+								//console.log(1)
+								if(_that.progress.value == 100) {
+									this.playi.className = "fa fa-play";
+									clearInterval(_that.timer)
+								}
+							}, 1000)
+							//							console.log(this)
+							//							console.log(_that)
 						} else {
-							playButton.pause();
-							playi.className="fa fa-play";
+							this.playButton.pause();
+							this.playi.className = "fa fa-play";
+							clearInterval(_that.timer)
 						}
-
-					}
+						//						console.log(this) //vue
+						//						function conso(){
+						//							con();
+						//							console.log(this)  // window
+						//							function con(){
+						//								console.log(this) // window
+						//								function con1(){
+						//									console.log(this) // window
+						//								}
+						//								con1();
+						//							}
+						//						}
+						//								conso();
+					},
+					
+				changeShow1:function(){
+//					console.log(1)
+					this.showx = !this.showx;
+				},
+					touchStart:function(ev){
+						if(ev.touches.length == 1) {    //tounches类数组，等于1时表示此时有只有一只手指在触摸屏幕
+                            this.startY = ev.touches[0].clientY; // 记录开始位置
+                        }
+						
+					},
+					touchMove:function(ev){
+						var yuan = document.querySelector(".yuan");
+						this.moveY =  ev.touches[0].clientY - this.startY + this.endY;
+						yuan.style.top= this.moveY +"px";
+						if(this.moveY>100){
+							yuan.style.top= "100px";
+							this.moveY = 100;
+						}else if(this.moveY<0){
+							yuan.style.top= "0px";
+							this.moveY=0
+						}
+						this.playButton.volume = 1-this.moveY/100;
+					},
+					touchEnd:function(ev){
+						this.endY = this.moveY
+//						console.log(this.moveY)
+//						if(this.endY<0){
+//							this.endY = 0;
+//						}else if(this.endY>100){
+//							this.endY = 100;
+//						}
+						
+//						console.log(this.endY)
+//						this.moveY =  this.endY - this.startY;
+				}
 
 				}
 
