@@ -229,8 +229,12 @@ progress[value]::-webkit-progress-value {
 .player .lyric {
   text-align: center;
   margin-bottom: 1rem;
+  height: 118px;
+  overflow: hidden;
 }
-
+.player .lyric .lyricDiv {
+	position: relative;
+}
 .player .lyric .previous,
 .player .lyric .next {
   color: rgba(255, 255, 255, .3);

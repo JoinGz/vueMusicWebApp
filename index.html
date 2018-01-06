@@ -65,6 +65,15 @@
 				left: -2.5px;
 				border-radius: 50%;
 			}
+			.myflex{
+				display: flex;
+				flex:1;
+			}
+			#music{
+				display: flex;
+    			flex-direction: column;
+    			flex: 1;
+			}
 		</style>
 	</head>
 
@@ -87,7 +96,7 @@
 
 		</div>
 		<template id="list">
-			<div>
+			<div class="myflex">
 				<section class="main">
 					<div class="list">
 						<ol>
@@ -111,7 +120,7 @@
 		</template>
 
 		<template id="list1">
-			<div>
+			<div class="myflex">
 				<section class="main">
 					<div class="list">
 						<ol>
@@ -187,22 +196,28 @@
 					<h2 class="title">月半小夜曲</h2>
 					<h3 class="artist">李克勤</h3>
 					<div class="lyric">
-						<p class="previous">人如天上的明月是不可拥有</p>
-						<p class="current">情如曲过只遗留无可挽救再分别</p>
-						<p class="next">为何只是失望填密我的空虚</p>
+						<p class="previous">" "</p>
+						<p class="current">{{lrc[0][1]}}</p>
+						<p class="next">{{lrc[1][1]}}</p>
+						<!--<div class="lyricDiv">
+							<p v-for="(item,index) in lrc">
+								{{item[1]}}
+							</p>
+						</div>-->
+
 					</div>
 					<div class="progressbar">
 						<progress value="0" max="100"></progress>
 						<!--<input type="range" value="10">-->
 					</div>
 					<div class="controls">
-						<button class="active" ><i class="fa fa-volume-up" @click.self="changeShow1"></i>
+						<button class="active"><i class="fa fa-volume-up" @click.self="changeShow1"></i>
 							<div class="controlVoice" v-show="showx">  <!--if是重新生成，数据会被初始化。show是展示隐藏。-->
 								<div class="yuan" @touchstart.stop.prevent = "touchStart" @touchmove.stop.prevent = "touchMove" @touchend.stop.prevent = "touchEnd" ></div>
 							</div>
 							
 						</button>
-						
+
 						<button class="active"><i class="fa fa-backward"></i></button>
 						<button class="active" @click="play"><i class="fa fa-play" id = "playi"></i></button>
 						<button class="active"><i class="fa fa-forward"></i></button>
@@ -211,7 +226,7 @@
 					<audio src="杨坤 - 晚安.mp3" controls="controls">
 						Your browser does not support the audio tag.
 					</audio>
-					
+
 				</div>
 			</section>
 
@@ -258,11 +273,12 @@
 						songtime: 0,
 						gotime: 0,
 						timer: 0,
-						startY :0, //开始位置
-						moveLength:0,//移动距离
-						endY:0, // 结束位置
-						moveY:0, //滑动时的位置
-						showx:false
+						startY: 0, //开始位置
+						moveLength: 0, //移动距离
+						endY: 0, // 结束位置
+						moveY: 0, //滑动时的位置
+						showx: false,
+						lrc: [1, 2, 3]
 					}
 				},
 				computed: {
@@ -278,15 +294,41 @@
 				},
 				methods: {
 					play: function() {
-						//						var playButton = document.querySelector("audio");
-						//						var playi =document.querySelector("#playi");
-						//						console.log(playi)
+						// var playButton = document.querySelector("audio");
+						// var playi =document.querySelector("#playi");
+						// console.log(playi)
 						this.songtime = this.playButton.duration;
+						var lycp = document.querySelector(".current");
+						var next = document.querySelector(".next");
+						var previous = document.querySelector(".previous");
+						var lyricbox = document.querySelector(".lyricDiv"); //歌词盒子
+						var lrctop = 0;//盒子移动变量
+//						console.log(lycp)
 						var _that = this; //  在这个function里面再定义function，这个function的this指向window
-						//						console.log(this.songtime)
+						// console.log(this.songtime)
+						this.playButton.ontimeupdate = function(e) {
+							//console.log(_that.lrc.length);
+							for(var i = 0; i < _that.lrc.length; i++) {
+								if(this.currentTime > _that.lrc[i][0]) {
+//									console.log(lrctop)
+//									lrctop += 50;
+									if(i > 1) {
+										previous.innerHTML = _that.lrc[i - 1][1];
+									}
 
+									lycp.innerHTML = _that.lrc[i][1]
+									if(i < _that.lrc.length - 1) {
+										next.innerHTML = _that.lrc[i + 1][1];
+									} else if(i > _that.lrc.length - 2) {
+										next.innerHTML = "";
+									}
+//									lyricbox.style.top = -lrctop+"px";
+								}
+							}
+							//								console.log(1)
+						}
 						if(this.songs) {
-							//							this.playButton.src = "杨坤 - 晚安.mp3";
+							// this.playButton.src = "杨坤 - 晚安.mp3";
 							this.songs = !this.songs;
 
 						}
@@ -298,69 +340,111 @@
 								_that.gotime = _that.playButton.currentTime;
 								_that.progress.value = Math.round(_that.gotime / _that.songtime * 100);
 								//console.log(1)
+								//console.log(_that.lrc)
 								if(_that.progress.value == 100) {
 									this.playi.className = "fa fa-play";
 									clearInterval(_that.timer)
 								}
 							}, 1000)
-							//							console.log(this)
-							//							console.log(_that)
+							// console.log(this)
+							// console.log(_that)
 						} else {
 							this.playButton.pause();
 							this.playi.className = "fa fa-play";
 							clearInterval(_that.timer)
 						}
-						//						console.log(this) //vue
-						//						function conso(){
-						//							con();
-						//							console.log(this)  // window
-						//							function con(){
-						//								console.log(this) // window
-						//								function con1(){
-						//									console.log(this) // window
+						// console.log(this) //vue
+						// function conso(){
+						// con();
+						// console.log(this)  // window
+						// function con(){
+						// console.log(this) // window
+						// function con1(){
+						// console.log(this) // window
 						//								}
-						//								con1();
+						// con1();
 						//							}
 						//						}
 						//								conso();
 					},
-					
-				changeShow1:function(){
-//					console.log(1)
-					this.showx = !this.showx;
-				},
-					touchStart:function(ev){
-						if(ev.touches.length == 1) {    //tounches类数组，等于1时表示此时有只有一只手指在触摸屏幕
-                            this.startY = ev.touches[0].clientY; // 记录开始位置
-                        }
-						
-					},
-					touchMove:function(ev){
-						var yuan = document.querySelector(".yuan");
-						this.moveY =  ev.touches[0].clientY - this.startY + this.endY;
-						yuan.style.top= this.moveY +"px";
-						if(this.moveY>100){
-							yuan.style.top= "100px";
-							this.moveY = 100;
-						}else if(this.moveY<0){
-							yuan.style.top= "0px";
-							this.moveY=0
-						}
-						this.playButton.volume = 1-this.moveY/100;
-					},
-					touchEnd:function(ev){
-						this.endY = this.moveY
-//						console.log(this.moveY)
-//						if(this.endY<0){
-//							this.endY = 0;
-//						}else if(this.endY>100){
-//							this.endY = 100;
-//						}
-						
-//						console.log(this.endY)
-//						this.moveY =  this.endY - this.startY;
-				}
 
+					changeShow1: function() {
+						//console.log(1)
+						this.showx = !this.showx;
+					},
+					touchStart: function(ev) {
+						if(ev.touches.length == 1) { //tounches类数组，等于1时表示此时有只有一只手指在触摸屏幕
+							this.startY = ev.touches[0].clientY; // 记录开始位置
+						}
+
+					},
+					touchMove: function(ev) {
+						var yuan = document.querySelector(".yuan");
+						this.moveY = ev.touches[0].clientY - this.startY + this.endY;
+						yuan.style.top = this.moveY + "px";
+						if(this.moveY > 100) {
+							yuan.style.top = "100px";
+							this.moveY = 100;
+						} else if(this.moveY < 0) {
+							yuan.style.top = "0px";
+							this.moveY = 0
+						}
+						this.playButton.volume = 1 - this.moveY / 100;
+					},
+					touchEnd: function(ev) {
+						this.endY = this.moveY
+						//console.log(this.moveY)
+						//if(this.endY<0){
+						//this.endY = 0;
+						//}else if(this.endY>100){
+						//this.endY = 100;
+						//}
+						//console.log(this.endY)
+						//this.moveY =  this.endY - this.startY;
+					},
+					getlrc: function() {
+						var _this = this;
+						this.$http.get('./lrc.php').then(function(res) {
+							var lrctxt = res.data; //获取歌词
+							var lrc = lrctxt.split("\n"); // 歌词一行一个数据放入数组
+							//console.log(lrc)
+							var pattern = /\[\d{2}\:\d{2}\.\d{2}\]/g; //匹配时间的正则
+							var result = []; // 结果存放
+							while(!pattern.test(lrc[0])) { // 歌词开头有不是歌词的删除掉，得到纯净歌词文件
+								lrc = lrc.slice(1)
+							}
+							lrc[lrc.length - 1].length === 0 ? lrc.pop() : ""; // 删除最后的空白，看歌词文件最后有回车没得
+							//console.log(lrc)
+							lrc.forEach(function(item, index, arr) {
+//								console.log(item)
+//								console.log(typeof item)
+								var time = item.match(pattern);
+								value = item.replace(pattern, "");
+								time.forEach(function(v, i, a) {
+									var t = v.slice(1, -1).split(":");
+									//v.slice(1,-1)--> 从第一个到最后中间的 取到了数字 
+									//split(":") 用:参照分割成数组
+									result.push([parseInt(t[0], 10) * 60 + parseFloat(t[1]), value]);
+								})
+
+							});
+							result.sort(function(a, b) {
+								return a[0] - b[0];
+							});
+							//return result;
+							//console.log(result)
+							// console.log(_this.lrc)
+							// console.log(result)
+							_this.lrc = result;
+						})
+					}
+
+				},
+				mounted: function() {
+					//console.log(1)
+					this.getlrc();
+
+					
 				}
 
 			}
