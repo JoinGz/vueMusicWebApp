@@ -65,14 +65,16 @@
 				left: -2.5px;
 				border-radius: 50%;
 			}
-			.myflex{
+			
+			.myflex {
 				display: flex;
-				flex:1;
+				flex: 1;
 			}
-			#music{
+			
+			#music {
 				display: flex;
-    			flex-direction: column;
-    			flex: 1;
+				flex-direction: column;
+				flex: 1;
 			}
 		</style>
 	</head>
@@ -190,11 +192,11 @@
 			<section class="main">
 				<div class="player">
 					<div class="disc">
-						<img src="img/李克勤.jpg" alt="李克勤">
-						<span class="duration">4:20</span>
+						<img :src="nowsong.photo" alt="李克勤">
+						<span class="duration">{{songtime | changTime}}</span>
 					</div>
-					<h2 class="title">月半小夜曲</h2>
-					<h3 class="artist">李克勤</h3>
+					<h2 class="title">{{nowsong.title}}</h2>
+					<h3 class="artist">{{nowsong.artist}}</h3>
 					<div class="lyric">
 						<p class="previous">" "</p>
 						<p class="current">{{lrc[0][1]}}</p>
@@ -218,12 +220,12 @@
 							
 						</button>
 
-						<button class="active"><i class="fa fa-backward"></i></button>
+						<button class="active"  @click="last"><i class="fa fa-backward"></i></button>
 						<button class="active" @click="play"><i class="fa fa-play" id = "playi"></i></button>
-						<button class="active"><i class="fa fa-forward"></i></button>
+						<button class="active" @click="next"><i class="fa fa-forward"></i></button>
 						<button class="active"><i class="fa fa-random"></i></button>
 					</div>
-					<audio src="杨坤 - 晚安.mp3" controls="controls">
+					<audio :src="nowsong.songname" controls="controls" >
 						Your browser does not support the audio tag.
 					</audio>
 
@@ -235,7 +237,7 @@
 
 	<script>
 		window.onload = function() {
-
+			var Event = new Vue();
 			var home = {
 				template: "#list",
 				mounted: function() {
@@ -278,7 +280,13 @@
 						endY: 0, // 结束位置
 						moveY: 0, //滑动时的位置
 						showx: false,
-						lrc: [1, 2, 3]
+						lrc: [1, 2, 3],
+						songID: 1,
+						allsongs: {},
+						nowsong: "",
+						co: false,
+						lrcaddress: "",
+						now:""
 					}
 				},
 				computed: {
@@ -291,27 +299,51 @@
 					progress: function() {
 						return document.querySelector("progress"); // 进度条
 					}
+
+				},
+				watch: {
+					'$route' (to, from) {
+						// 对路由变化作出响应...
+						if(to.params.id) {
+							console.log(this.lrcaddress);
+							this.songID = parseInt(to.params.id);
+							this.now = this.songID;
+							this.nowsong = this.allsongs[this.songID - 1];
+							this.lrcaddress = this.nowsong.lrc;
+							this.getlrc();
+							
+//							console.log(this.playButton.duration);
+//							console.log(this.songtime);
+							//console.log(this.lrc)
+							this.play();
+						}
+
+					}
 				},
 				methods: {
 					play: function() {
 						// var playButton = document.querySelector("audio");
 						// var playi =document.querySelector("#playi");
 						// console.log(playi)
+						//console.log(this._id);
+						//console.log(this.nowsong.title);
+						
 						this.songtime = this.playButton.duration;
+						console.log(this.songtime);
 						var lycp = document.querySelector(".current");
 						var next = document.querySelector(".next");
 						var previous = document.querySelector(".previous");
 						var lyricbox = document.querySelector(".lyricDiv"); //歌词盒子
-						var lrctop = 0;//盒子移动变量
-//						console.log(lycp)
+						var lrctop = 0; //盒子移动变量
+						//console.log(lycp)
 						var _that = this; //  在这个function里面再定义function，这个function的this指向window
 						// console.log(this.songtime)
 						this.playButton.ontimeupdate = function(e) {
 							//console.log(_that.lrc.length);
 							for(var i = 0; i < _that.lrc.length; i++) {
 								if(this.currentTime > _that.lrc[i][0]) {
-//									console.log(lrctop)
-//									lrctop += 50;
+									//console.log(lrctop)
+									//lrctop += 50;
 									if(i > 1) {
 										previous.innerHTML = _that.lrc[i - 1][1];
 									}
@@ -322,16 +354,19 @@
 									} else if(i > _that.lrc.length - 2) {
 										next.innerHTML = "";
 									}
-//									lyricbox.style.top = -lrctop+"px";
+									//									lyricbox.style.top = -lrctop+"px";
 								}
 							}
 							//								console.log(1)
 						}
-						if(this.songs) {
-							// this.playButton.src = "杨坤 - 晚安.mp3";
-							this.songs = !this.songs;
-
-						}
+						
+//						if(this.songs) {
+//							// this.playButton.src = "杨坤 - 晚安.mp3";
+//							this.songs = !this.songs;
+//							
+//						}
+						
+					
 						if(this.playButton.paused) {
 							this.playButton.play();
 							this.playi.className = "fa fa-pause";
@@ -343,7 +378,8 @@
 								//console.log(_that.lrc)
 								if(_that.progress.value == 100) {
 									this.playi.className = "fa fa-play";
-									clearInterval(_that.timer)
+									_that.next();
+									clearInterval(_that.timer);
 								}
 							}, 1000)
 							// console.log(this)
@@ -371,6 +407,9 @@
 					changeShow1: function() {
 						//console.log(1)
 						this.showx = !this.showx;
+					},
+					gettime :function(){
+						this.songtime = this.playButton.duration;
 					},
 					touchStart: function(ev) {
 						if(ev.touches.length == 1) { //tounches类数组，等于1时表示此时有只有一只手指在触摸屏幕
@@ -402,9 +441,11 @@
 						//console.log(this.endY)
 						//this.moveY =  this.endY - this.startY;
 					},
+
 					getlrc: function() {
 						var _this = this;
-						this.$http.get('./lrc.php').then(function(res) {
+						//						console.log(this.lrcaddress)
+						this.$http.get(this.lrcaddress).then(function(res) {
 							var lrctxt = res.data; //获取歌词
 							var lrc = lrctxt.split("\n"); // 歌词一行一个数据放入数组
 							//console.log(lrc)
@@ -416,8 +457,8 @@
 							lrc[lrc.length - 1].length === 0 ? lrc.pop() : ""; // 删除最后的空白，看歌词文件最后有回车没得
 							//console.log(lrc)
 							lrc.forEach(function(item, index, arr) {
-//								console.log(item)
-//								console.log(typeof item)
+								//								console.log(item)
+								//								console.log(typeof item)
 								var time = item.match(pattern);
 								value = item.replace(pattern, "");
 								time.forEach(function(v, i, a) {
@@ -436,15 +477,62 @@
 							// console.log(_this.lrc)
 							// console.log(result)
 							_this.lrc = result;
+							
+							//							console.log(_this.lrc)
 						})
+					},
+					next:function(){
+						this.now++;
+						if(this.now>this.allsongs.length-1){
+							alert("没有啦");
+							return;
+						}
+						this.nowsong = this.allsongs[this.now];
+						this.lrcaddress = this.nowsong.lrc;
+						this.getlrc();
+						this.playButton.autoplay = "autoplay";
+						
+						
+					},
+					last:function(){
+						this.now--;
+						if(this.now<0){
+							alert("最后一首啦");
+							return;
+						}
+						this.nowsong = this.allsongs[this.now];
+						this.lrcaddress = this.nowsong.lrc;
+						this.getlrc();
 					}
 
 				},
 				mounted: function() {
-					//console.log(1)
-					this.getlrc();
+					var _this = this;
+					this.$http.get('./new_file.php').then(function(res) {
+						_this.allsongs = JSON.parse(res.data.replace(/^.*?([\[{])/, "$1"));
+						var x = parseInt(this.$route.params.id);
+						_this.nowsong = _this.allsongs[x - 1];
+						this.lrcaddress = _this.nowsong.lrc;
+						//						console.log(this.lrcaddress)
+						this.getlrc();
+						//						console.log(t)
+						//						console.log(_this.allsongs);
+						//						console.log(_this.nowsong);
+						//						console.log(this.$route.params.id);
+						//			
+						
+					}, function() {
+						alert("我靠，出错了")
+					});
 
-					
+					//					Event.$on("songsong", function(data) {
+					//							console.log("go" + data)
+
+					//							console.log(this.lrcaddress);
+					//							console.log(1)
+					//							
+					//						})
+
 				}
 
 			}
@@ -461,16 +549,54 @@
 			var routers1 = new VueRouter({
 				routes: router1
 			})
+			Vue.filter('changTime', function(a) {
+				if(!a) {
+					return '00:00'
+				}
+				//				value = value.toString()
+				//返回处理后的值
+				var hh = parseInt(a / 3600);
+				if(hh < 10) hh = "0" + hh;
+				var mm = parseInt((a - hh * 3600) / 60);
+				if(mm < 10) mm = "0" + mm;
+				var ss = parseInt((a - hh * 3600) % 60);
+				if(ss < 10) ss = "0" + ss;
+				var length =  mm + ":" + ss;
+				return length;
+				
+			})
 			new Vue({ //放最后 妈蛋 ，弄半天
 				el: "#music",
 				router: routers1,
 				data: {
-					m: 123
+					m: ""
 
 				},
 				methods: {
 
 				}
+				//				,
+				//				watch: {
+				//					'$route' (to, from) {
+				// 对路由变化作出响应...
+				//						if(to.params.id) {
+				//							this.m = parseInt(to.params.id);
+				//							Event.$emit("songsong", this.m);
+				//							console.log(this.m)
+				//							this.songID = id;
+				//							console.log(this.allsongs);
+				//							console.log(this.songID);
+				//							console.log(kl)
+				//							this.nowsong = this.allsongs[this.songID];
+				//						}
+				//
+				//					}
+				//				}
+				//				,
+				//				mounted: function () {
+				//					console.log(this.m)
+				//					
+				//				}
 			})
 		}
 	</script>

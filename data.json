@@ -4,54 +4,72 @@
 		"artist": "谭咏麟",
 		"duration": "04:50",
 		"photo": "img/谭咏麟.jpg",
-		"id":"01"
+		"id":"01",
+		"lrc" : "./Songs/lrc.txt",
+		"songname" : "./Songs/杨坤 - 晚安.mp3"
 	}, {
-		"title": "合久必婚",
-		"artist": "李克勤",
+		"title": "晴天",
+		"artist": "周杰伦",
 		"duration": "04:50",
 		"photo": "img/李克勤.jpg",
-		"id":"02"
+		"id":"02",
+		"lrc" : "./Songs/周杰伦-晴天.txt",
+		"songname" : "./Songs/周杰伦-晴天.mp3"
 	}, {
 		"title": "送情郎(2010.12.11 德云二队张一元晚场)",
 		"artist": "岳云鹏",
 		"duration": "04:50",
 		"photo": "img/岳云鹏.jpg",
-		"id":"03"
+		"id":"03",
+		"lrc" : "./Songs/lrc.txt",
+		"songname" : "./Songs/杨坤 - 晚安.mp3"
+	}, {
+		"title": "说散就散",
+		"artist": "袁娅维",
+		"duration": "04:50",
+		"photo": "img/谭咏麟.jpg",
+		"id":"04",
+		"lrc" : "./Songs/说散就散.txt",
+		"songname" : "./Songs/袁娅维 - 说散就散.mp3"
+	}, {
+		"title": "合久必婚",
+		"artist": "李克勤",
+		"duration": "04:50",
+		"photo": "img/李克勤.jpg",
+		"id":"05",
+		"lrc" : "./Songs/lrc.txt",
+		"songname" : "./Songs/杨坤 - 晚安.mp3"
+	}, {
+		"title": "送情郎(2010.12.11 德云二队张一元晚场)",
+		"artist": "岳云鹏",
+		"duration": "04:50",
+		"photo": "img/岳云鹏.jpg",
+		"id":"06",
+		"lrc" : "./Songs/lrc.txt",
+		"songname" : "./Songs/杨坤 - 晚安.mp3"
 	}, {
 		"title": "一生中最爱",
 		"artist": "谭咏麟",
 		"duration": "04:50",
 		"photo": "img/谭咏麟.jpg",
-		"id":"04"
+		"id":"07",
+		"lrc" : "./Songs/lrc.txt",
+		"songname" : "./Songs/杨坤 - 晚安.mp3"
 	}, {
 		"title": "合久必婚",
 		"artist": "李克勤",
 		"duration": "04:50",
 		"photo": "img/李克勤.jpg",
-		"id":"05"
+		"id":"08",
+		"lrc" : "./Songs/lrc.txt",
+		"songname" : "./Songs/杨坤 - 晚安.mp3"
 	}, {
 		"title": "送情郎(2010.12.11 德云二队张一元晚场)",
 		"artist": "岳云鹏",
 		"duration": "04:50",
 		"photo": "img/岳云鹏.jpg",
-		"id":"06"
-	}, {
-		"title": "一生中最爱",
-		"artist": "谭咏麟",
-		"duration": "04:50",
-		"photo": "img/谭咏麟.jpg",
-		"id":"07"
-	}, {
-		"title": "合久必婚",
-		"artist": "李克勤",
-		"duration": "04:50",
-		"photo": "img/李克勤.jpg",
-		"id":"08"
-	}, {
-		"title": "送情郎(2010.12.11 德云二队张一元晚场)",
-		"artist": "岳云鹏",
-		"duration": "04:50",
-		"photo": "img/岳云鹏.jpg",
-		"id":"09"
+		"id":"09",
+		"lrc" : "./Songs/lrc.txt",
+		"songname" : "./Songs/杨坤 - 晚安.mp3"
 	}
 ]
