@@ -90,12 +90,17 @@
 					<i class="fa fa-list"></i>
 				</router-link>
 			</header>
-			<transition name="pp">
+			<keep-alive>
+				<transition name="pp">
 				<keep-alive>
 					<router-view></router-view>
 				</keep-alive>
-			</transition>
-
+				</transition>
+			</keep-alive>
+			
+			<audio>
+				Your browser does not support the audio tag.
+			</audio>
 		</div>
 		<template id="list">
 			<div class="myflex">
@@ -228,9 +233,7 @@
 						<button class="active" @click="next"><i class="fa fa-forward"></i></button>
 						<button class="active"><i class="fa fa-random"></i></button>
 					</div>
-					<audio :src="nowsong.songname" controls="controls" >
-						Your browser does not support the audio tag.
-					</audio>
+					
 
 				</div>
 			</section>
@@ -293,7 +296,8 @@
 						pointStartX:0,
 						pointMoveLength:0,
 						pointEndX:0,
-						pointMoveX:0
+						pointMoveX:0,
+						routerID:"",
 						
 					}
 				},
@@ -321,12 +325,31 @@
 						clearInterval(this.timer);
 						// 对路由变化作出响应...
 						if(to.params.id) {
-//							console.log(this.lrcaddress);
+						//console.log(this.lrcaddress);
+						clearInterval(this.timer);
+							var _this = this;
 							this.songID = parseInt(to.params.id);
-							this.now = this.songID;
-							this.nowsong = this.allsongs[this.songID - 1];
-							this.lrcaddress = this.nowsong.lrc;
-							this.getlrc();
+							if(this.songID!=this.routerID){
+								clearInterval(this.timer);
+								this.nowsong = this.allsongs[this.songID - 1];
+								this.playButton.src = this.nowsong.songname;
+								this.lrcaddress = this.nowsong.lrc;
+								this.getlrc();
+							}
+							this.routerID = this.songID;
+//							this.changtime();
+								this.timer = setInterval(function() { 
+								_this.gotime = _this.playButton.currentTime;
+								_this.progress.value = Math.round(_this.gotime / _this.songtime * 100);
+								_this.point.style.left = _this.PointWidth*_this.progress.value/100 +"px";
+								_this.pointEndX = _this.PointWidth*_this.progress.value/100;
+								console.log(11)
+								if(_this.progress.value == 100) {
+									_this.playi.className = "fa fa-play";
+									_this.next();
+									clearInterval(_this.timer);
+								}
+							}, 1000)
 							
 						}
 
@@ -358,24 +381,27 @@
 //							//console.log(1)
 //						}
 						if(this.playButton.paused) {
-							this.playButton.play();
-							this.playi.className = "fa fa-pause";
-							this.timer = setInterval(function() { // 再次定义function(setinterval)里面的this指向window
-								//console.log(this) //window
-								_that.gotime = _that.playButton.currentTime;
-								_that.progress.value = Math.round(_that.gotime / _that.songtime * 100);
-								_that.point.style.left = _that.PointWidth*_that.progress.value/100 +"px";
-								console.log(1)
-								if(_that.progress.value == 100) {
-									this.playi.className = "fa fa-play";
-									_that.next();
-									clearInterval(_that.timer);
-								}
-							}, 1000)
+//							this.playButton.play();
+//							this.playi.className = "fa fa-pause";
+//							this.timer = setInterval(function() { // 再次定义function(setinterval)里面的this指向window
+//								//console.log(this) //window
+//								_that.gotime = _that.playButton.currentTime;
+//								_that.progress.value = Math.round(_that.gotime / _that.songtime * 100);
+//								_that.point.style.left = _that.PointWidth*_that.progress.value/100 +"px";
+//								_that.pointEndX = _that.PointWidth*_that.progress.value/100;
+//								console.log(1)
+//								if(_that.progress.value == 100) {
+//									this.playi.className = "fa fa-play";
+//									_that.next();
+//									clearInterval(_that.timer);
+//								}
+//							}, 1000)
+							this.thingPlay();
 						} else {
-							this.playButton.pause();
-							this.playi.className = "fa fa-play";
-							clearInterval(_that.timer)
+//							this.playButton.pause();
+//							this.playi.className = "fa fa-play";
+//							clearInterval(_that.timer)
+							this.thingPause();
 						}
 						// console.log(this) //vue
 						// function conso(){
@@ -405,7 +431,6 @@
 						}
 //						console.log(ev)
 						}else{
-							
 							_this.playButton.pause();
 							_this.playi.className = "fa fa-play";
 							clearInterval(_this.timer)
@@ -461,22 +486,23 @@
 						if(ev.target == voice){
 							this.endY = this.moveY
 						}else{
-							_this.playButton.play();
-							_this.playi.className = "fa fa-pause";
-							_this.timer = setInterval(function() { // 再次定义function(setinterval)里面的this指向window
-								//console.log(this) //window
-								_this.gotime = _this.playButton.currentTime;
-								_this.progress.value = Math.round(_this.gotime / _this.songtime * 100);
-								_this.point.style.left = _this.PointWidth*_this.progress.value/100 +"px";
-								//console.log(1)
-								//console.log(_that.lrc)
-								console.log(1)
-								if(_this.progress.value == 100) {
-									_this.playi.className = "fa fa-play";
-									_this.next();
-									clearInterval(_this.timer);
-								}
-							}, 1000)
+//							_this.playButton.play();
+//							_this.playi.className = "fa fa-pause";
+//							_this.timer = setInterval(function() { 
+//								
+//								_this.gotime = _this.playButton.currentTime;
+//								_this.progress.value = Math.round(_this.gotime / _this.songtime * 100);
+//								_this.point.style.left = _this.PointWidth*_this.progress.value/100 +"px";
+//								_this.pointEndX = _this.PointWidth*_this.progress.value/100;
+//								console.log(1)
+//								if(_this.progress.value == 100) {
+//									_this.playi.className = "fa fa-play";
+//									_this.next();
+//									clearInterval(_this.timer);
+//								}
+//							}, 1000)
+
+							this.thingPlay();
 							// console.log(this)
 							// console.log(_that)
 							this.pointEndX = this.pointMoveX;
@@ -538,19 +564,22 @@
 							return;
 						}
 						this.now++;
+						this.routerID++;
 						this.nowsong = this.allsongs[this.now];
+						this.playButton.src = this.nowsong.songname;
 						this.lrcaddress = this.nowsong.lrc;
 						this.getlrc();
 					},
 					last:function(){
 						clearInterval(this.timer);
-						
 						if(this.now<0){
 							alert("最后一首啦");
 							return;
 						}
 						this.now--;
+						this.routerID--;
 						this.nowsong = this.allsongs[this.now];
+						this.playButton.src = this.nowsong.songname;
 						this.lrcaddress = this.nowsong.lrc;
 						this.getlrc();
 					},
@@ -561,6 +590,29 @@
 						this.progress.value = this.playButton.currentTime/this.songtime*100;
 						this.pointEndX = cx*this.PointWidth;
 						this.point.style.left = this.pointEndX+"px";
+					},
+					thingPlay:function(){
+						var _this = this ; 
+						this.playButton.play();
+						this.playi.className = "fa fa-pause";
+						clearInterval(this.timer);
+						this.timer = setInterval(function() { 		
+						_this.gotime = _this.playButton.currentTime;
+						_this.progress.value = Math.round(_this.gotime / _this.songtime * 100);
+						_this.point.style.left = _this.PointWidth*_this.progress.value/100 +"px";
+						_this.pointEndX = _this.PointWidth*_this.progress.value/100;
+						console.log(1)
+						if(_this.progress.value == 100) {
+						_this.playi.className = "fa fa-play";
+						_this.next();
+						clearInterval(_this.timer);
+							}
+						}, 1000)
+					},
+					thingPause:function(){
+						this.playButton.pause();
+						this.playi.className = "fa fa-play";
+						clearInterval(this.timer)
 					}
 
 				},
@@ -570,7 +622,9 @@
 						_this.allsongs = JSON.parse(res.data.replace(/^.*?([\[{])/, "$1"));
 						var x = parseInt(this.$route.params.id);
 						_this.nowsong = _this.allsongs[x - 1];
+						this.playButton.src = this.nowsong.songname;
 						this.lrcaddress = _this.nowsong.lrc;
+						this.routerID = x;
 						//						console.log(this.lrcaddress)
 						this.getlrc();
 						//						console.log(t)
@@ -595,35 +649,38 @@
 //					console.log(PointWidth);
 					this.playButton.onloadedmetadata = function() {
 						_this.songtime = _this.playButton.duration;
-						console.log(_this.songtime);
+//						console.log(_this.songtime);
 						_this.pointEndX = 0;
 						_this.pointMoveX = 0;
 						_this.point.style.left="0px";
 						_this.progress.value ="0";
 						if(_this.playButton.paused) {
-							_this.playButton.play();
-							_this.playButton.autoplay = "autoplay";
-							_this.playi.className = "fa fa-pause";
-							_this.timer = setInterval(function() { // 再次定义function(setinterval)里面的this指向window
-								//console.log(this) //window
-								_this.gotime = _this.playButton.currentTime;
-								_this.progress.value = Math.round(_this.gotime / _this.songtime * 100);
-								_this.point.style.left = _this.PointWidth*_this.progress.value/100 +"px";
-								//console.log(1)
-								//console.log(_that.lrc)
-								console.log(1)
-								if(_this.progress.value == 100) {
-									_this.playi.className = "fa fa-play";
-									_this.next();
-									clearInterval(_this.timer);
-								}
-							}, 1000)
+//							_this.playButton.play();
+//							_this.playButton.autoplay = "autoplay";
+//							_this.playi.className = "fa fa-pause";
+//							_this.timer = setInterval(function() { // 再次定义function(setinterval)里面的this指向window
+//								//console.log(this) //window
+//								_this.gotime = _this.playButton.currentTime;
+//								_this.progress.value = Math.round(_this.gotime / _this.songtime * 100);
+//								_this.point.style.left = _this.PointWidth*_this.progress.value/100 +"px";
+//								_this.pointEndX = _this.PointWidth*_this.progress.value/100;
+//								console.log(2)
+//								//console.log(_that.lrc)
+////								console.log(1)
+//								if(_this.progress.value == 100) {
+//									_this.playi.className = "fa fa-play";
+//									_this.next();
+//									clearInterval(_this.timer);
+//								}
+//							}, 1000)
+							_this.thingPlay();
 							// console.log(this)
 							// console.log(_that)
 						} else {
-							_this.playButton.pause();
-							_this.playi.className = "fa fa-play";
-							clearInterval(_this.timer)
+//							_this.playButton.pause();
+//							_this.playi.className = "fa fa-play";
+//							clearInterval(_this.timer)
+							_this.thingPause();
 						}
 					}
 					var _that =this;
