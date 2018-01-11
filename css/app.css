@@ -76,7 +76,17 @@ progress[value]::-webkit-progress-bar {
 progress[value]::-webkit-progress-value {
   background-color: #fd9500;
 }
-
+.progressbar{
+	position: relative;
+}
+.progressbar .point{
+	position: absolute;
+	height: 10px;
+	width: 10px;
+	border-radius: 50%;
+	background: gold;
+	top:-4.5px;
+}
 .page {
   display: flex;
   flex-direction: column;

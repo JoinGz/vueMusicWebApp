@@ -209,8 +209,11 @@
 
 					</div>
 					<div class="progressbar">
-						<progress value="0" max="100"></progress>
+						<progress value="0" max="100" @click="changtime()">
+							
+						</progress>
 						<!--<input type="range" value="10">-->
+						<div class="point" @touchstart.stop.prevent = "touchStart" @touchmove.stop.prevent = "touchMove" @touchend.stop.prevent = "touchEnd"></div>
 					</div>
 					<div class="controls">
 						<button class="active"><i class="fa fa-volume-up" @click.self="changeShow1"></i>
@@ -286,7 +289,12 @@
 						nowsong: "",
 						co: false,
 						lrcaddress: "",
-						now:""
+						now:"",
+						pointStartX:0,
+						pointMoveLength:0,
+						pointEndX:0,
+						pointMoveX:0
+						
 					}
 				},
 				computed: {
@@ -298,75 +306,57 @@
 					},
 					progress: function() {
 						return document.querySelector("progress"); // 进度条
-					}
+					},
+					point:function(){
+						return document.querySelector(".point");
+					},
+					PointWidth:function(){
+						return window.screen.availWidth-this.point.offsetWidth;
+					} 
+					
 
 				},
 				watch: {
 					'$route' (to, from) {
+						clearInterval(this.timer);
 						// 对路由变化作出响应...
 						if(to.params.id) {
-							console.log(this.lrcaddress);
+//							console.log(this.lrcaddress);
 							this.songID = parseInt(to.params.id);
 							this.now = this.songID;
 							this.nowsong = this.allsongs[this.songID - 1];
 							this.lrcaddress = this.nowsong.lrc;
 							this.getlrc();
 							
-//							console.log(this.playButton.duration);
-//							console.log(this.songtime);
-							//console.log(this.lrc)
-							this.play();
 						}
 
 					}
 				},
 				methods: {
 					play: function() {
-						// var playButton = document.querySelector("audio");
-						// var playi =document.querySelector("#playi");
-						// console.log(playi)
-						//console.log(this._id);
-						//console.log(this.nowsong.title);
-						
-						this.songtime = this.playButton.duration;
-						console.log(this.songtime);
-						var lycp = document.querySelector(".current");
-						var next = document.querySelector(".next");
-						var previous = document.querySelector(".previous");
-						var lyricbox = document.querySelector(".lyricDiv"); //歌词盒子
-						var lrctop = 0; //盒子移动变量
-						//console.log(lycp)
 						var _that = this; //  在这个function里面再定义function，这个function的this指向window
 						// console.log(this.songtime)
-						this.playButton.ontimeupdate = function(e) {
-							//console.log(_that.lrc.length);
-							for(var i = 0; i < _that.lrc.length; i++) {
-								if(this.currentTime > _that.lrc[i][0]) {
-									//console.log(lrctop)
-									//lrctop += 50;
-									if(i > 1) {
-										previous.innerHTML = _that.lrc[i - 1][1];
-									}
-
-									lycp.innerHTML = _that.lrc[i][1]
-									if(i < _that.lrc.length - 1) {
-										next.innerHTML = _that.lrc[i + 1][1];
-									} else if(i > _that.lrc.length - 2) {
-										next.innerHTML = "";
-									}
-									//									lyricbox.style.top = -lrctop+"px";
-								}
-							}
-							//								console.log(1)
-						}
-						
-//						if(this.songs) {
-//							// this.playButton.src = "杨坤 - 晚安.mp3";
-//							this.songs = !this.songs;
-//							
+//						this.playButton.ontimeupdate = function(e) {
+//							//console.log(_that.lrc.length);
+//							for(var i = 0; i < _that.lrc.length; i++) {
+//								if(this.currentTime > _that.lrc[i][0]) {
+//									//console.log(lrctop)
+//									//lrctop += 50;
+//									if(i > 1) {
+//										previous.innerHTML = _that.lrc[i - 1][1];
+//									}
+//
+//									lycp.innerHTML = _that.lrc[i][1]
+//									if(i < _that.lrc.length - 1) {
+//										next.innerHTML = _that.lrc[i + 1][1];
+//									} else if(i > _that.lrc.length - 2) {
+//										next.innerHTML = "";
+//									}
+//									//lyricbox.style.top = -lrctop+"px";
+//								}
+//							}
+//							//console.log(1)
 //						}
-						
-					
 						if(this.playButton.paused) {
 							this.playButton.play();
 							this.playi.className = "fa fa-pause";
@@ -374,16 +364,14 @@
 								//console.log(this) //window
 								_that.gotime = _that.playButton.currentTime;
 								_that.progress.value = Math.round(_that.gotime / _that.songtime * 100);
-								//console.log(1)
-								//console.log(_that.lrc)
+								_that.point.style.left = _that.PointWidth*_that.progress.value/100 +"px";
+								console.log(1)
 								if(_that.progress.value == 100) {
 									this.playi.className = "fa fa-play";
 									_that.next();
 									clearInterval(_that.timer);
 								}
 							}, 1000)
-							// console.log(this)
-							// console.log(_that)
 						} else {
 							this.playButton.pause();
 							this.playi.className = "fa fa-play";
@@ -401,24 +389,39 @@
 						// con1();
 						//							}
 						//						}
-						//								conso();
+						//conso();
 					},
 
 					changeShow1: function() {
 						//console.log(1)
 						this.showx = !this.showx;
 					},
-					gettime :function(){
-						this.songtime = this.playButton.duration;
-					},
 					touchStart: function(ev) {
-						if(ev.touches.length == 1) { //tounches类数组，等于1时表示此时有只有一只手指在触摸屏幕
-							this.startY = ev.touches[0].clientY; // 记录开始位置
+						var voice = document.querySelector(".yuan");
+						var _this = this;
+						if(ev.target == voice){
+							if(ev.touches.length == 1) { //tounches类数组，等于1时表示此时有只有一只手指在触摸屏幕
+							this.startY = ev.touches[0].clientY;// 记录开始位置
 						}
+//						console.log(ev)
+						}else{
+							
+							_this.playButton.pause();
+							_this.playi.className = "fa fa-play";
+							clearInterval(_this.timer)
+							if(ev.touches.length == 1) { //tounches类数组，等于1时表示此时有只有一只手指在触摸屏幕
+							this.pointStartX = ev.touches[0].clientX;// 记录开始位置
+						}
+						}
+						
 
 					},
 					touchMove: function(ev) {
-						var yuan = document.querySelector(".yuan");
+						var voice = document.querySelector(".yuan");
+//						var point = document.querySelector(".point");
+//						var PointWidth = window.screen.availWidth - point.offsetWidth;
+						if(ev.target == voice){
+							var yuan = document.querySelector(".yuan");
 						this.moveY = ev.touches[0].clientY - this.startY + this.endY;
 						yuan.style.top = this.moveY + "px";
 						if(this.moveY > 100) {
@@ -429,9 +432,56 @@
 							this.moveY = 0
 						}
 						this.playButton.volume = 1 - this.moveY / 100;
+						}else{
+//								var point = document.querySelector(".point");
+								this.pointMoveX = ev.touches[0].clientX - this.pointStartX + this.pointEndX;
+								this.point.style.left = this.pointMoveX + "px";
+								var length = this.pointMoveX/this.PointWidth;
+								
+						if(this.pointMoveX > this.PointWidth) {
+							this.point.style.left = this.PointWidth+"px";
+							this.pointMoveX = this.PointWidth;
+						} else if(this.pointMoveX < 0) {
+							this.point.style.left = "0px";
+							this.pointMoveX = 0
+						}
+						
+						this.playButton.currentTime = length*this.songtime;
+						this.progress.value = this.playButton.currentTime/this.songtime*100;
+//						console.log("end:"+this.pointEndX);
+//						console.log("move:"+this.pointMoveX);
+						}
+						
 					},
 					touchEnd: function(ev) {
-						this.endY = this.moveY
+						var voice = document.querySelector(".yuan");
+						var _this = this;
+//						var point = document.querySelector(".point");
+//						var PointWidth = window.screen.availWidth - point.offsetWidth;
+						if(ev.target == voice){
+							this.endY = this.moveY
+						}else{
+							_this.playButton.play();
+							_this.playi.className = "fa fa-pause";
+							_this.timer = setInterval(function() { // 再次定义function(setinterval)里面的this指向window
+								//console.log(this) //window
+								_this.gotime = _this.playButton.currentTime;
+								_this.progress.value = Math.round(_this.gotime / _this.songtime * 100);
+								_this.point.style.left = _this.PointWidth*_this.progress.value/100 +"px";
+								//console.log(1)
+								//console.log(_that.lrc)
+								console.log(1)
+								if(_this.progress.value == 100) {
+									_this.playi.className = "fa fa-play";
+									_this.next();
+									clearInterval(_this.timer);
+								}
+							}, 1000)
+							// console.log(this)
+							// console.log(_that)
+							this.pointEndX = this.pointMoveX;
+						}
+						
 						//console.log(this.moveY)
 						//if(this.endY<0){
 						//this.endY = 0;
@@ -444,7 +494,7 @@
 
 					getlrc: function() {
 						var _this = this;
-						//						console.log(this.lrcaddress)
+						//console.log(this.lrcaddress)
 						this.$http.get(this.lrcaddress).then(function(res) {
 							var lrctxt = res.data; //获取歌词
 							var lrc = lrctxt.split("\n"); // 歌词一行一个数据放入数组
@@ -482,27 +532,35 @@
 						})
 					},
 					next:function(){
-						this.now++;
+						clearInterval(this.timer);
 						if(this.now>this.allsongs.length-1){
 							alert("没有啦");
 							return;
 						}
+						this.now++;
 						this.nowsong = this.allsongs[this.now];
 						this.lrcaddress = this.nowsong.lrc;
 						this.getlrc();
-						this.playButton.autoplay = "autoplay";
-						
-						
 					},
 					last:function(){
-						this.now--;
+						clearInterval(this.timer);
+						
 						if(this.now<0){
 							alert("最后一首啦");
 							return;
 						}
+						this.now--;
 						this.nowsong = this.allsongs[this.now];
 						this.lrcaddress = this.nowsong.lrc;
 						this.getlrc();
+					},
+					changtime:function(){
+						var clientX = event.clientX;
+						var cx = clientX/this.progress.offsetWidth;
+						this.playButton.currentTime = cx*this.songtime;
+						this.progress.value = this.playButton.currentTime/this.songtime*100;
+						this.pointEndX = cx*this.PointWidth;
+						this.point.style.left = this.pointEndX+"px";
 					}
 
 				},
@@ -532,6 +590,69 @@
 					//							console.log(1)
 					//							
 					//						})
+//					var point = document.querySelector(".point");
+//					var PointWidth = window.screen.availWidth - point.offsetWidth;
+//					console.log(PointWidth);
+					this.playButton.onloadedmetadata = function() {
+						_this.songtime = _this.playButton.duration;
+						console.log(_this.songtime);
+						_this.pointEndX = 0;
+						_this.pointMoveX = 0;
+						_this.point.style.left="0px";
+						_this.progress.value ="0";
+						if(_this.playButton.paused) {
+							_this.playButton.play();
+							_this.playButton.autoplay = "autoplay";
+							_this.playi.className = "fa fa-pause";
+							_this.timer = setInterval(function() { // 再次定义function(setinterval)里面的this指向window
+								//console.log(this) //window
+								_this.gotime = _this.playButton.currentTime;
+								_this.progress.value = Math.round(_this.gotime / _this.songtime * 100);
+								_this.point.style.left = _this.PointWidth*_this.progress.value/100 +"px";
+								//console.log(1)
+								//console.log(_that.lrc)
+								console.log(1)
+								if(_this.progress.value == 100) {
+									_this.playi.className = "fa fa-play";
+									_this.next();
+									clearInterval(_this.timer);
+								}
+							}, 1000)
+							// console.log(this)
+							// console.log(_that)
+						} else {
+							_this.playButton.pause();
+							_this.playi.className = "fa fa-play";
+							clearInterval(_this.timer)
+						}
+					}
+					var _that =this;
+					var lycp = document.querySelector(".current");
+					var next = document.querySelector(".next");
+					var previous = document.querySelector(".previous");
+//					var lyricbox = document.querySelector(".lyricDiv"); //歌词盒子
+//					var lrctop = 0; //盒子移动变量
+					this.playButton.ontimeupdate = function(e) {
+							//console.log(_that.lrc.length);
+							for(var i = 0; i < _that.lrc.length; i++) {
+								if(this.currentTime > _that.lrc[i][0]) {
+									//console.log(lrctop)
+									//lrctop += 50;
+									if(i > 1) {
+										previous.innerHTML = _that.lrc[i - 1][1];
+									}
+
+									lycp.innerHTML = _that.lrc[i][1]
+									if(i < _that.lrc.length - 1) {
+										next.innerHTML = _that.lrc[i + 1][1];
+									} else if(i > _that.lrc.length - 2) {
+										next.innerHTML = "";
+									}
+									//lyricbox.style.top = -lrctop+"px";
+								}
+							}
+							//console.log(1)
+						}
 
 				}
 
