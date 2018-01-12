@@ -1,12 +1,12 @@
 [
 	{
-		"title": "一生中最爱",
-		"artist": "谭咏麟",
+		"title": "原谅",
+		"artist": "刘瑞琦",
 		"duration": "04:50",
 		"photo": "img/谭咏麟.jpg",
 		"id":"01",
-		"lrc" : "./Songs/lrc.txt",
-		"songname" : "./Songs/杨坤 - 晚安.mp3"
+		"lrc" : "./Songs/刘瑞琦 - 原谅.txt",
+		"songname" : "./Songs/刘瑞琦 - 原谅.mp3"
 	}, {
 		"title": "晴天",
 		"artist": "周杰伦",
@@ -16,13 +16,13 @@
 		"lrc" : "./Songs/周杰伦-晴天.txt",
 		"songname" : "./Songs/周杰伦-晴天.mp3"
 	}, {
-		"title": "送情郎(2010.12.11 德云二队张一元晚场)",
-		"artist": "岳云鹏",
+		"title": "追光者",
+		"artist": "岑宁儿",
 		"duration": "04:50",
 		"photo": "img/岳云鹏.jpg",
 		"id":"03",
-		"lrc" : "./Songs/lrc.txt",
-		"songname" : "./Songs/杨坤 - 晚安.mp3"
+		"lrc" : "./Songs/岑宁儿 - 追光者.txt",
+		"songname" : "./Songs/岑宁儿 - 追光者.mp3"
 	}, {
 		"title": "说散就散",
 		"artist": "袁娅维",
@@ -32,44 +32,36 @@
 		"lrc" : "./Songs/说散就散.txt",
 		"songname" : "./Songs/袁娅维 - 说散就散.mp3"
 	}, {
-		"title": "合久必婚",
-		"artist": "李克勤",
+		"title": "陪我看日出",
+		"artist": "回音哥",
 		"duration": "04:50",
 		"photo": "img/李克勤.jpg",
 		"id":"05",
-		"lrc" : "./Songs/lrc.txt",
-		"songname" : "./Songs/杨坤 - 晚安.mp3"
+		"lrc" : "./Songs/回音哥 - 陪我看日出.txt",
+		"songname" : "./Songs/回音哥 - 陪我看日出.mp3"
 	}, {
-		"title": "送情郎(2010.12.11 德云二队张一元晚场)",
-		"artist": "岳云鹏",
+		"title": "遗憾",
+		"artist": "李代沫",
 		"duration": "04:50",
 		"photo": "img/岳云鹏.jpg",
 		"id":"06",
-		"lrc" : "./Songs/lrc.txt",
-		"songname" : "./Songs/杨坤 - 晚安.mp3"
+		"lrc" : "./Songs/李代沫 - 遗憾.txt",
+		"songname" : "./Songs/李代沫 - 遗憾.mp3"
 	}, {
-		"title": "一生中最爱",
-		"artist": "谭咏麟",
+		"title": "当你",
+		"artist": "林俊杰",
 		"duration": "04:50",
 		"photo": "img/谭咏麟.jpg",
 		"id":"07",
-		"lrc" : "./Songs/lrc.txt",
-		"songname" : "./Songs/杨坤 - 晚安.mp3"
+		"lrc" : "./Songs/林俊杰 - 当你.txt",
+		"songname" : "./Songs/林俊杰 - 当你.mp3"
 	}, {
-		"title": "合久必婚",
-		"artist": "李克勤",
+		"title": "对嘴",
+		"artist": "周笔畅",
 		"duration": "04:50",
 		"photo": "img/李克勤.jpg",
 		"id":"08",
-		"lrc" : "./Songs/lrc.txt",
-		"songname" : "./Songs/杨坤 - 晚安.mp3"
-	}, {
-		"title": "送情郎(2010.12.11 德云二队张一元晚场)",
-		"artist": "岳云鹏",
-		"duration": "04:50",
-		"photo": "img/岳云鹏.jpg",
-		"id":"09",
-		"lrc" : "./Songs/lrc.txt",
-		"songname" : "./Songs/杨坤 - 晚安.mp3"
+		"lrc" : "./Songs/周笔畅 - 对嘴.txt",
+		"songname" : "./Songs/周笔畅 - 对嘴.mp3"
 	}
 ]
