@@ -99,6 +99,7 @@ progress[value]::-webkit-progress-value {
     left: 50%;
     margin-left: -51.5px;
     transition: all 0.5s ease;
+    display: none;
 }
 .page {
   display: flex;

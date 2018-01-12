@@ -42,7 +42,7 @@
 				/*离开动画之前的状态*/
 			}
 			
-			.slide-left-enter,
+			/*.slide-left-enter,
 			.slide-right-leave-active {
 				opacity: 0;
 				-webkit-transform: translate3d(100%, 0, 0);
@@ -54,7 +54,7 @@
 				opacity: 0;
 				-webkit-transform: translate3d(-100%, 0, 0);
 				transform: translate3d(-100%, 0, -50%);
-			}
+			}*/
 			
 			button {
 				position: relative;
@@ -91,8 +91,21 @@
 			}
 			
 			.Router {
-				transition: all .8s ease;
+				transition: all .2s ease;
 				display: flex;
+			}
+			.down-enter,
+			.down-leave{
+				opacity: 1;
+				-webkit-transform: translate3d(0, 10rem, 0);
+				transform: translate3d(0, 10rem, 0);
+			}
+			
+			.down-leave-active,
+			.down-enter-active {
+				opacity: 0;
+				-webkit-transform: translate3d(0, 10rem, 0);
+				transform: translate3d(0, 10rem, 0);
 			}
 		</style>
 	</head>
@@ -109,7 +122,7 @@
 				</router-link>
 			</header>
 			<keep-alive>
-				<transition :name="transitionName">
+				<transition name="down">
 					<keep-alive>
 						<router-view class="Router"></router-view>
 					</keep-alive>
@@ -191,7 +204,7 @@
 					</div>
 
 				</div>
-				<div class="err" style="display: none;">没有了</div>
+				<div class="err">没有了</div>
 			</section>
 
 		</template>
@@ -680,21 +693,23 @@
 				el: "#music",
 				router: routers1,
 				data: {
-					m: "",
-					transitionName: "slide-left"
+					m: ""
+//					,
+//					transitionName: "slide-left"
 				},
 				methods: {
 
-				},
-				watch: {
-					'$route' (to, from) {
-						if(to.path == '/home') {
-							this.transitionName = 'slide-right';
-						} else {
-							this.transitionName = 'slide-left';
-						}
-					}
 				}
+//				,
+//				watch: {
+//					'$route' (to, from) {
+//						if(to.path == '/home') {
+//							this.transitionName = 'slide-right';
+//						} else {
+//							this.transitionName = 'slide-left';
+//						}
+//					}
+//				}
 			})
 		}
 	</script>
