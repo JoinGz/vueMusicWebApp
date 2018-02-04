@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Animation</title>
+	<script src="../Vue/vue.js"></script>
+	<style>
+		.div{
+			height: 100px;
+			width: 100px;
+			background: indianred;
+		}
+		.go-enter{
+			transform: translateX(-100%);
+		}
+		.go-leave{
+			/*没卵用？*/
+			transform: translateY(10%);
+		}
+		.go-enter-active,.go-leave-active{
+			transition: all 0.5s ease;
+		}
+		.go-leave-active{
+			transform: translateY(100%);
+			
+		}
+			.slide-left-enter{
+				opacity: 0;
+				-webkit-transform: translate3d(-100%, 0, 0);
+				transform: translate3d(-100%, 0, 0);
+			}
+			.slide-left-leave{
+				/*transform: translate3d(0, 0, 0);*/
+			}
+			.slide-left-enter-active{
+				transition: all 0.5s ease;
+			}
+			.slide-left-leave-active{
+				transition: all 0.5s ease;
+				-webkit-transform: translate3d(-100%, 0, 0);
+				transform: translate3d(-100%, 0, 0);
+			}
+	</style>
+</head>
+<body>
+	<div id="app">
+		<button @click="hehe">嘿嘿嘿</button>
+		<transition name = "go">
+			<div class="div" v-show="myshow"></div>
+		</transition>
+		
+		{{m}}
+	</div>
+	<div id="app2">
+		<button @click="my=!my">嘿嘿嘿</button>
+		<transition name = "slide-left">
+			<div class="div" v-show="my"></div>
+		</transition>
+		
+	</div>
+	
+</body>
+<script>
+	new Vue({
+		el:"#app",
+		data:{
+			m:123,
+			myshow:true
+		},
+		methods:{
+			hehe:function(){
+				this.myshow = !this.myshow;
+			}
+		}
+	})
+		new Vue({
+		el:"#app2",
+		data:{
+			my:true
+		},
+		methods:{
+
+		}
+	})
+</script>
+</html>
